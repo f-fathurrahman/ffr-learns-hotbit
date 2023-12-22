@@ -39,6 +39,9 @@ class Interactions:
         If tables['rest']=='default' use default interactions for the ones not given in tables.
 
         """
+
+        print("ENTER Interactions constructor")
+
         from os import environ
         from os.path import isfile
 
@@ -96,6 +99,10 @@ class Interactions:
         self.max_cut = 0.0 # maximum interaction range in Bohrs
         self.read_tables()
         self.first=True
+
+        print("EXIT Interactions constructor")
+
+
 
     def __del__(self):
         pass
@@ -276,6 +283,9 @@ class Interactions:
 
     def get_matrices(self, kpts=None):
         """ Hamiltonian and overlap matrices. """
+        
+        print("Starting matrix construction")
+
         timing = False
         el = self.calc.el
         states = self.calc.st
@@ -303,6 +313,7 @@ class Interactions:
 #                  for i in range(len(el))]
 #        orbindex=[el.orbitals(i,indices=True)
 #                  for i in range(len(el))]
+        # FFR: fixed size????
         h, s, dh, ds = zeros((14,)), zeros((14,)), zeros((14,3)), zeros((14,3))
 
         phases = []
@@ -415,7 +426,7 @@ class Interactions:
             self.first=False
 
         stop('matrix construction')
-
+        print("Finished matrix construction")
         return H0, S, dH0, dS
 
 

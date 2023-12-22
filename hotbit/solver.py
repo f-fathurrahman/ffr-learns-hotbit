@@ -14,13 +14,13 @@ from _hotbit import geig
 
 class Solver:
     def __init__(self,calc):
-        self.calc=proxy(calc)
-        self.maxiter=calc.get('maxiter')
-        self.mixer=BuildMixer(calc.mixer)
-        self.SCC=calc.get('SCC')
-        self.norb=self.calc.el.norb
-        self.iterations=None
-        self.iter_history=[]
+        self.calc = proxy(calc)
+        self.maxiter = calc.get('maxiter')
+        self.mixer = BuildMixer(calc.mixer)
+        self.SCC = calc.get('SCC')
+        self.norb = self.calc.el.norb
+        self.iterations = None
+        self.iter_history = []
 
     def __del__(self):
         pass
@@ -43,7 +43,13 @@ class Solver:
         Solve the generalized eigenvalue problem for a fixed electrostatic
         potential, i.e. a single SCC iteration.
         """
+        print("")
+        print("Enter get_eigenvalues_and_wavefunctions:")
+        print("")
+
         nk, norb = get_HS_shape(H0, S)
+        print("nk = ", nk)
+        print("norb = ", norb)
 
         e  = np.zeros((nk, norb))
         wf = np.zeros((nk, norb, norb), dtype=H0.dtype)
@@ -54,6 +60,10 @@ class Solver:
             else:
                 H = H0[ik]
             e[ik], wf[ik] = self.diagonalize(H, S[ik])
+
+        print("")
+        print("Exit get_eigenvalues_and_wavefunctions:")
+        print("")
 
         return e, wf
 

@@ -135,9 +135,7 @@ class Hotbit(Output):
                           of these variables you are forced to look at the source code.)
 
         """
-        print("")
-        print("ENTER: Hotbit.__init__")
-        print("")
+        print("ENTER Hotbit.__init__")
 
         from copy import copy
         import os
@@ -187,9 +185,7 @@ class Hotbit(Output):
             self.set(key,internal0[key])
         #self.set_text(self.txt)
         #self.timer=Timer('Hotbit',txt=self.get_output())
-        print("")
-        print("EXIT: Hotbit.__init__")
-        print("")
+        print("EXIT Hotbit.__init__")
 
 
     def __del__(self):
@@ -307,7 +303,10 @@ class Hotbit(Output):
         from os import environ
 
         self.version=hotbit_version
-        print('\n\n\n\n\n', file=self.txt)
+        #print('\n\n\n\n\n', file=self.txt)
+        #
+        print('\n', file=self.txt)
+        #
         print(' _           _    _     _ _', file=self.txt)
         print('| |__   ___ | |_ | |__ |_| |_', file=self.txt)
         print('|  _ \ / _ \|  _||  _ \| |  _|', file=self.txt)
@@ -398,12 +397,15 @@ class Hotbit(Output):
         """ If atoms moved, solve electronic structure. """
         print("\nENTER Hotbit.solve_ground_state")
         if not self.init:
+            #
             assert type(atoms)!=type(None)
             print("Doing initialization")
             self._initialize(atoms)
         if type(atoms)==type(None):
+            #
             pass
         elif self.calculation_required(atoms,'ground state'):
+            #
             self.el.update_geometry(atoms)
             t0 = time()
             self.st.solve()
@@ -417,28 +419,29 @@ class Hotbit(Output):
             #if self.get('SCC'):
             #    atoms.set_charges(-self.st.get_dq())
         else:
+            print("Will not do anything")
             pass
         print("EXIT  Hotbit.solve_ground_state")
 
 
-    def _initialize(self,atoms):
+    def _initialize(self, atoms):
         """ Initialization of hotbit. """
         print("ENTER Hotbit._initialize")
         if not self.init:
             self.set_text(self.txt)
-            self.timer=Timer('Hotbit',txt=self.get_output())
+            self.timer = Timer('Hotbit',txt=self.get_output())
             self.start_timing('initialization')
-            self.el=Elements(self,atoms)
-            self.ia=Interactions(self)
-            self.st=States(self)
-            self.rep=Repulsion(self)
-            self.pp=PairPotential(self)
+            self.el = Elements(self,atoms)
+            self.ia = Interactions(self)
+            self.st = States(self)
+            self.rep = Repulsion(self)
+            self.pp = PairPotential(self)
             if self.get('vdw'):
                 if self.get('vdw_parameters') is not None:
                     self.el.update_vdw(self.get('vdw_parameters'))
                 setup_vdw(self)
-            self.env=Environment(self)
-            pbc=atoms.get_pbc()
+            self.env = Environment(self)
+            pbc = atoms.get_pbc()
             # FIXME: gamma_cut -stuff
             #if self.get('SCC') and np.any(pbc) and self.get('gamma_cut')==None:
             #    raise NotImplementedError('SCC not implemented for periodic systems yet (see parameter gamma_cut).')
@@ -452,10 +455,13 @@ class Hotbit(Output):
             self.flags['grid'] = False
             self.stop_timing('initialization')
         self.el.set_atoms(atoms)
+
         if not self.init:
-            self.init=True
+            print("Will set init to true")
+            self.init = True
+            print("Will call Hotbit.greetings")
             self.greetings()
-        print("EXIT  Hotbit._initialize")
+        print("EXIT Hotbit._initialize")
 
 
     def calculation_required(self,atoms,quantities):
@@ -633,7 +639,7 @@ class Hotbit(Output):
                                %(self.el.get_name(),mix.parse_name_for_atoms(atoms)))
         else:
             self._initialize(atoms)
-        print("EXIT  Hotbit.set_atoms")
+        print("EXIT Hotbit.set_atoms")
 
 
     def get_occupation_numbers(self,kpt=0):

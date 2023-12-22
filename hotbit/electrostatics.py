@@ -147,13 +147,13 @@ _gamma_correction_dict = {
 class Electrostatics:
     def __init__(self, calc, charge_density='Gaussian',
                  solver=None, accuracy_goal=12):
-        self.calc=proxy(calc)
-        self.norb=calc.el.get_nr_orbitals()
-        self.SCC=calc.get('SCC')
-        self.N=len(calc.el)
-        self.dq=np.zeros((self.N))
-        self.G=np.zeros((self.N,self.N))
-        self.dG=np.zeros((self.N,self.N,3))
+        self.calc = proxy(calc)
+        self.norb = calc.el.get_nr_orbitals()
+        self.SCC = calc.get('SCC')
+        self.N = len(calc.el)
+        self.dq = np.zeros((self.N))
+        self.G = np.zeros((self.N,self.N))
+        self.dG = np.zeros((self.N,self.N,3))
 
         self.accuracy_goal = accuracy_goal
 

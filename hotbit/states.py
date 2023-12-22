@@ -10,7 +10,8 @@ import numpy as np
 from box import mix
 from .auxil import k_to_kappa_points
 from box.mix import divisors
-pi=np.pi
+
+pi = np.pi
 
 
 #
@@ -63,17 +64,17 @@ class States:
         self.es = Electrostatics(calc,
             charge_density = calc.get('charge_density'),
             solver = calc.get('coulomb_solver'))
-        self.solver=Solver(calc)
-        self.calc=proxy(calc)
-        self.nat=len(calc.el)
-        self.norb=calc.el.get_nr_orbitals()
-        self.prev_dq=[None,None]
-        self.count=0
+        self.solver = Solver(calc)
+        self.calc = proxy(calc)
+        self.nat = len(calc.el)
+        self.norb = calc.el.get_nr_orbitals()
+        self.prev_dq = [None,None]
+        self.count = 0
         self.first_solve = True
-        self.SCC=calc.get('SCC')
-        self.rho=None
-        self.rhoe0=None
-        self.nk=None
+        self.SCC = calc.get('SCC')
+        self.rho = None
+        self.rhoe0 = None
+        self.nk = None
         
        
     def setup_k_sampling(self,kpts,physical=True,rs='kappa'):
@@ -204,8 +205,10 @@ class States:
 
         if self.SCC:
             self.es.construct_Gamma_matrix(self.calc.el.atoms)
+        print("Enter get_states")
         self.e, self.wf = self.solver.get_states(self.calc,dq,self.H0,self.S)
-        
+        print("After get_states")
+
         self.check_mulliken_charges()
         self.large_update()
         self.count+=1

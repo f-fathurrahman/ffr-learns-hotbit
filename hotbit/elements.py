@@ -30,15 +30,15 @@ class Elements:
 
         self._update_atoms(atoms)
 
-        self.calc=proxy(calc)
-        self.symbols=atoms.get_chemical_symbols()
-        self.N=len(atoms)
+        self.calc = proxy(calc)
+        self.symbols = atoms.get_chemical_symbols()
+        self.N = len(atoms)
         self.name = None
-        self.positions=None
+        self.positions = None
         if charge == None:
             self.charge = calc.get_charge()
 
-        self.present=[]
+        self.present = []
         for element in self.symbols:
             if element not in self.present:
                 self.present.append(element)
@@ -53,9 +53,9 @@ class Elements:
         # set customized files
         current = path.abspath('.')
         default = environ.get('HOTBIT_PARAMETERS')
-        if elements!=None:
+        if elements != None:
             for key in elements:
-                if key=='rest': continue
+                if key == 'rest': continue
                 file = elements[key]
                 if not path.isfile(file):
                     raise RuntimeError('Custom element file "%s" for %s not found.' %(file,key))
@@ -64,9 +64,9 @@ class Elements:
                     self.files[key] = file
 
         # find element data from default place
-        if elements==None or elements!=None and 'rest' in elements and elements['rest']=='default':
+        if elements == None or elements != None and 'rest' in elements and elements['rest']=='default':
             for key in self.symbols:
-                if self.files[key]!=None: continue
+                if self.files[key] != None: continue
                 file = path.join(default,'%s.elm' %key)
                 if not path.isfile(file):
                     raise RuntimeError('Default element file "%s" for %s not found.' %(file,key))
@@ -363,6 +363,7 @@ class Elements:
         This initialization is done only once for given set of element info.
         Initialization of any geometrical properties is done elsewhere.
         '''
+        print("ENTER Elements._elements_initialization")
         self.elements={}
         for symb in self.present:
             if symb not in self.files:
@@ -430,6 +431,9 @@ class Elements:
         self.atom_orb_indices2=np.zeros((self.N,9),int)-1
         for i,noi in enumerate(self.nr_orbitals):
             self.atom_orb_indices2[i,:noi]=self.atom_orb_indices[i]
+
+        print("EXIT Elements._elements_initialization")
+
 
 
     def get_number_of_transformations(self):
