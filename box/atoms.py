@@ -7,10 +7,11 @@ import numpy as npy
 from box import mix
 from box.data import data
 
-from ase import units
-from ase import Atom as ase_Atom
-from ase import Atoms as ase_Atoms
+from my_ase import units
+from my_ase import Atom as ase_Atom
+from my_ase import Atoms as ase_Atoms
 from copy import copy
+
 vec=npy.array
 
 

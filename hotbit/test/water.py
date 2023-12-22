@@ -1,5 +1,5 @@
 from hotbit import Hotbit 
-from ase import *
+from my_ase import *
 from box import Atoms
 from box.md import quench
 from hotbit.test.misc import default_param

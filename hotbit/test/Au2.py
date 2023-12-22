@@ -1,4 +1,4 @@
-from ase import *
+from my_ase import *
 from hotbit import Hotbit
 from hotbit.test.misc import default_param
 

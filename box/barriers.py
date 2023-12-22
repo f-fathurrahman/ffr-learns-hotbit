@@ -2,7 +2,7 @@ import os
 from box import Atoms
 from box import md
 import numpy as np
-import ase
+import my_ase
 from box.interpolation import VectorSplineFunction
 #from box.calculators import Calculator
 from scipy.linalg import norm
@@ -438,10 +438,10 @@ if __name__=='__main__':
     images.append(last)
     
     
-    bti=BTI(images,calc)
+    bti = BTI(images,calc)
     bti.initial_interpolation()
-    qn=ase.MDMin(bti,dt=0.05)
-    writer=md.TrajectoryWriter(images,name='test')
+    qn = my_ase.MDMin(bti,dt=0.05)
+    writer = md.TrajectoryWriter(images,name='test')
     qn.attach(writer)
     qn.run(fmax=fmax)
 

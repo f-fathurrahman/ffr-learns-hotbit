@@ -5,7 +5,7 @@ test-suite to check consistency of forces, the virial and energy.
 
 import numpy as np
 
-import ase
+import my_ase
 
 def check_forces(atoms, dx=1e-6):
     """

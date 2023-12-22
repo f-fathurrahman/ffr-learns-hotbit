@@ -4,7 +4,7 @@ Contains data for high symmetry points in different structures.
 
 import numpy as np
 
-import ase.dft.kpoints as kpoints
+import my_ase.dft.kpoints as kpoints
 from functools import reduce
 
 _Gamma   = [ 0.00, 0.00, 0.00 ]

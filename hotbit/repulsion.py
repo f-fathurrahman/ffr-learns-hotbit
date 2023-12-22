@@ -2,13 +2,14 @@
 # Please see the accompanying LICENSE file for further information.
 
 import numpy as np
-from ase.units import Bohr,Hartree
+from my_ase.units import Bohr,Hartree
 from box import mix
 from box.interpolation import Function
 from hotbit.io import read_repulsion
 import os
-import ase
+import my_ase
 from weakref import proxy
+
 find=mix.find_value
 vec=np.array
 norm=np.linalg.norm

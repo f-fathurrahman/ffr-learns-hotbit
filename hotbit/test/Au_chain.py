@@ -1,8 +1,8 @@
-import ase.units as units
-from ase import *
+import my_ase.units as units
+from my_ase import *
 from hotbit import *
 from box.md import check_energy_conservation
-from ase import io
+from my_ase import io
 
 M=7
 atoms = Atoms('Au2',[(5,0,0),(5,2.5,0.3)],container='Wedge')

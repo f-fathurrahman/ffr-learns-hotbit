@@ -1,10 +1,10 @@
 from __future__ import division
 
-from ase import Atoms as ase_Atoms
+from my_ase import Atoms as ase_Atoms
 import numpy as np
 from copy import copy
 from hotbit.containers import *
-from ase.io import PickleTrajectory
+from my_ase.io import PickleTrajectory
 
 
 

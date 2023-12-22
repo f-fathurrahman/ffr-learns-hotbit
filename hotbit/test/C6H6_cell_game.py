@@ -1,5 +1,5 @@
-from ase import *
-from ase import Atoms as ase_Atoms
+from my_ase import *
+from my_ase import Atoms as ase_Atoms
 from hotbit import *
 from hotbit.atoms import Atoms
 from box.md import check_energy_conservation

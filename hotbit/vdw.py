@@ -4,7 +4,7 @@
 from math import sqrt
 
 import numpy as np
-from ase.units import Hartree, Bohr
+from my_ase.units import Hartree, Bohr
 from weakref import proxy
 
 

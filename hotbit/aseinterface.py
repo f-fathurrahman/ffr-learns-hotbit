@@ -12,8 +12,8 @@ import glob
 import sys
 import numpy as np
 from .auxil import k_to_kappa_points
-from ase.units import Bohr, Hartree
-from ase import Atoms
+from my_ase.units import Bohr, Hartree
+from my_ase import Atoms
 from box.timing import Timer
 from .elements import Elements
 from .interactions import Interactions
@@ -31,7 +31,8 @@ from hotbit.vdw import setup_vdw
 from box.mix import broaden
 import box.mix as mix
 from time import time
-hbar=0.02342178268
+
+hbar = 0.02342178268
 
 
 class Hotbit(Output):
@@ -134,6 +135,10 @@ class Hotbit(Output):
                           of these variables you are forced to look at the source code.)
 
         """
+        print("")
+        print("ENTER: Hotbit.__init__")
+        print("")
+
         from copy import copy
         import os
 
@@ -170,17 +175,21 @@ class Hotbit(Output):
         self.init=False
         self.notes=[]
         self.dry_run = '--dry-run' in sys.argv
-        internal0 = {'sepsilon':0.,                # add this to the diagonal of S to avoid LAPACK error in diagonalization
-                     'tol_imaginary_e': 1E-13,     # tolerance for imaginary band energy
-                     'tol_mulliken':1E-5,          # tolerance for mulliken charge sum deviation from integer
-                     'tol_eigenvector_norm':1E-6, # tolerance for eigenvector norm for eigensolver
-                     'symop_range':5}              # range for the number of symmetry operations in all symmetries
+        internal0 = {
+            'sepsilon':0.,               # add this to the diagonal of S to avoid LAPACK error in diagonalization
+            'tol_imaginary_e': 1E-13,    # tolerance for imaginary band energy
+            'tol_mulliken':1E-5,         # tolerance for mulliken charge sum deviation from integer
+            'tol_eigenvector_norm':1E-6, # tolerance for eigenvector norm for eigensolver
+            'symop_range':5              # range for the number of symmetry operations in all symmetries
+        }              
         internal0.update(internal)
         for key in internal0:
             self.set(key,internal0[key])
         #self.set_text(self.txt)
         #self.timer=Timer('Hotbit',txt=self.get_output())
-        print("End of __init__ in Hotbit class")
+        print("")
+        print("EXIT: Hotbit.__init__")
+        print("")
 
 
     def __del__(self):
@@ -390,6 +399,7 @@ class Hotbit(Output):
         print("\nENTER Hotbit.solve_ground_state")
         if not self.init:
             assert type(atoms)!=type(None)
+            print("Doing initialization")
             self._initialize(atoms)
         if type(atoms)==type(None):
             pass
@@ -461,6 +471,7 @@ class Hotbit(Output):
     def get_potential_energy(self,atoms,force_consistent=False):
         """ Return the potential energy of present system. """
         print("\nENTER Hotbit.get_potential_energy")
+        #
         if force_consistent:
             raise NotImplementedError
         if self.calculation_required(atoms,['energy']):

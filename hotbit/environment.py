@@ -1,6 +1,7 @@
 import numpy as np
-from ase.units import Hartree
+from my_ase.units import Hartree
 from weakref import proxy
+
 hbar=0.02342178
 
 

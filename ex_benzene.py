@@ -1,4 +1,4 @@
-from ase import *
+from my_ase import *
 from hotbit import *
 from ase.build import molecule
 
@@ -9,7 +9,7 @@ atoms.set_cell([10.0, 10.0, 10.0])
 #calc = Hotbit(SCC=True, width=0.05, txt=None, 
 #    mixer={'name':'Anderson','mixing_constant':0.1, 'memory':4}
 #)
-calc = Hotbit(SCC=True, width=0.05, txt='LOG_benzene', 
+calc = Hotbit(SCC=True, width=0.05, txt='-', 
     mixer={'name': 'Pulay', 'mixing_constant': 0.2, 'memory':4}
 )
 #calc = Hotbit(SCC=False, width=0.05, txt=None)

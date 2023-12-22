@@ -5,9 +5,10 @@ import math
 import os, pickle
 from box import mix
 import time
-from ase import *
+from my_ase import *
 from box.broaden import *
 from box.mix import phival
+
 acos=math.acos
 cos=math.cos
 sin=math.sin

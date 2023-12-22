@@ -3,9 +3,11 @@ from __future__ import print_function
 import numpy as np
 from numpy.linalg.linalg import eigh 
 from box import mix
-from ase.units import Hartree
+from my_ase.units import Hartree
+
 dot=np.dot
 sqrt=np.sqrt
+
 import sys
 from box.timing import Timer
 

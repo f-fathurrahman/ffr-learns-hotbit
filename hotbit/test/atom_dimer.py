@@ -1,10 +1,10 @@
-from ase import *
+from my_ase import *
 from numpy import random, pi
 from box import Atoms
 from box import mix
 from hotbit import Hotbit
 #from hotbit import Calculator0
-from ase.units import Bohr, Hartree
+from my_ase.units import Bohr, Hartree
 from hotbit.test.misc import default_param
 
 # C-non-SCC

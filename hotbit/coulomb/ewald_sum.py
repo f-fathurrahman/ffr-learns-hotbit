@@ -15,7 +15,7 @@ import numpy as np
 # FIXME!!! Requires scipy, contribute erfc to numpy
 from scipy.special import erfc
 
-from ase.units import Hartree, Bohr
+from my_ase.units import Hartree, Bohr
 
 from box.timing import Timer
 

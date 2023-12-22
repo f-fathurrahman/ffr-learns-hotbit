@@ -1,10 +1,10 @@
-import ase
+import my_ase
 import numpy as np
 from box import mix
 from box.data import data
-from ase.md import VelocityVerlet
-from ase.io import Trajectory
-from ase.units import fs, Hartree
+from my_ase.md import VelocityVerlet
+from my_ase.io import Trajectory
+from my_ase.units import fs, Hartree
 
 
 class NullCalculator:
@@ -237,7 +237,7 @@ class TrajectoryWriter:
         
     def __call__(self):
         """ Writes trajectory file for current atoms list. """
-        from ase import Trajectory
+        from my_ase import Trajectory
         traj = Trajectory('%s_it%i.trj' %(self.name,self.i), 'w')
         for image in self.images:
             traj.write(image)
@@ -251,46 +251,46 @@ def quench(atoms,name=None,fmax=0.05,method='QN'):
             name=atoms.get_chemical_formula(mode="hill")
         except:
             raise ValueError('name not specified')
-    traj=ase.Trajectory(name+'_quenching.trj','w',atoms)
+    traj = my_ase.Trajectory(name+'_quenching.trj','w',atoms)
     
     if method=='QN':
-        qn=ase.QuasiNewton(atoms)
+        qn = my_ase.QuasiNewton(atoms)
     elif method=='FIRE':
-        qn=ase.FIRE(atoms)        
+        qn = my_ase.FIRE(atoms)        
     qn.attach(traj.write)   
     qn.run(fmax=fmax)
-    e=atoms.get_potential_energy()
-    ase.write(name+'_quenched.xyz',atoms)
+    e = atoms.get_potential_energy()
+    my_ase.write(name+'_quenched.xyz',atoms)
     return e
     
     
 def transition_barrier(calc,quench,guess,cell=None,pbc=None,constraints=None,\
                        M=None,name=None,fmax=0.05,steps=1000000):
-    import ase
-    method=ase.NEB
+    import my_ase
+    method = my_ase.NEB
     
     if type(guess)!=type([]) and type(guess)!=type(''):
         # all Atoms properties should be set for Atoms-type guess
-        images=guess
-        path=method(images)
+        images = guess
+        path = method(images)
     else:
         if type(guess)==type(''):
             assert guess.split('.')[-1]=='trj' and M==None 
             # for some reason copying has to be done...
-            images=[]
-            for image in ase.Trajectory(guess):
+            images = []
+            for image in my_ase.Trajectory(guess):
                 images.append(image.copy())
             path=method(images)
         else:
             assert type(guess)==type([]) and M!=None
-            images=[]
-            first=ase.read(guess[0])
+            images = []
+            first = my_ase.read(guess[0])
             images.append(first)
             for i in range(M-2):
                 images.append(first.copy())
-            last=ase.read(guess[1])
+            last = my_ase.read(guess[1])
             images.append(last)
-            path=method(images)
+            path = method(images)
             path.interpolate()  
               
         # now coordinates are set; set other properties
@@ -319,13 +319,13 @@ def transition_barrier(calc,quench,guess,cell=None,pbc=None,constraints=None,\
         print('Last image quenched. Energy=',eM)
             
     # solve the transition path
-    writer=TrajectoryWriter(images)        
-    minimizer=ase.QuasiNewton(path)
+    writer = TrajectoryWriter(images)        
+    minimizer = my_ase.QuasiNewton(path)
     minimizer.attach(writer)
     minimizer.run(fmax=fmax,steps=steps)
     
     # output of the final path
-    traj = ase.Trajectory('%s_converged.trj' %name, 'w')
+    traj = my_ase.Trajectory('%s_converged.trj' %name, 'w')
     path.write(traj)
     return images
        
@@ -336,14 +336,14 @@ def merge_atoms(atoms1,atoms2,box_from=None,R=0.3):
     """
     from box import Atoms
        
-    atoms=atoms1.copy()
+    atoms = atoms1.copy()
     print(type(atoms))
 
     # set box from the first atoms or box_from
     if box_from!=None:
-        bx=box_from
+        bx = box_from
     else:
-        bx=atoms1 
+        bx = atoms1 
     atoms.set_cell(bx.get_cell(),fix=True)
     atoms.set_pbc(bx.get_pbc())
     
@@ -369,7 +369,3 @@ if __name__=='__main__':
     print(atoms.get_cell())
     print(atoms.get_pbc())
     
-            
-            
-            
-            

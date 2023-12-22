@@ -1,8 +1,9 @@
-import ase
+import my_ase
 import numpy as np
 from box import mix
 from box.interpolation import TrilinearInterpolation
-from ase.io.cube import read_cube_data
+from my_ase.io.cube import read_cube_data
+
 vec=np.array
 
 class GridData:
@@ -161,14 +162,14 @@ class GridData:
         n=np.cross( end-start,vec([0,0,1]) )
         n/=np.linalg.norm(n)             
         start0, end0 = start - (width/2)*n, end - (width/2)*n
-        atoms=ase.Atoms()
+        atoms = my_ase.Atoms()
         
         # perform nwidth parallel scans        
         hlist=[]
         for shift in np.linspace(0,width,nwidth):
             l,h = self.linescan(start0+shift*n, end0+shift*n, threshold, points=points, bottom=bottom)
-            atoms.append( ase.Atom('X',start0+shift*n) )
-            atoms.append( ase.Atom('X',end0+shift*n) )
+            atoms.append( my_ase.Atom('X',start0+shift*n) )
+            atoms.append( my_ase.Atom('X',end0+shift*n) )
             hlist.append(h)                    
         hlist=np.array(hlist)                    
         

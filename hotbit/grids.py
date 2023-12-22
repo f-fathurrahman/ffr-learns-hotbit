@@ -1,6 +1,6 @@
 import numpy as np
 from weakref import proxy
-from ase.units import Bohr, Hartree
+from my_ase.units import Bohr, Hartree
 from hotbit.analysis.wavefunctions import angular
 from math import sqrt
 from scipy.special import erf

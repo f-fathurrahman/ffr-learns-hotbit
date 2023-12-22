@@ -4,8 +4,8 @@
     
     P. Koskinen 31.1 2008
 """
-from ase import Atoms as ase_Atoms
-from ase import Atom
+from my_ase import Atoms as ase_Atoms
+from my_ase import Atom
 import numpy as np
 from math import sqrt, atan, cos, sin
 from box.mix import gcd

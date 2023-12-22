@@ -4,7 +4,7 @@
 from __future__ import print_function
 
 import numpy as np
-from ase.units import Hartree, Bohr
+from my_ase.units import Hartree, Bohr
 from weakref import proxy
 
 def ij2s(i,j):

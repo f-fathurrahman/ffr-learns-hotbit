@@ -1,11 +1,11 @@
 from .element import Element
-from ase import Atoms as ase_Atoms
+from my_ase import Atoms as ase_Atoms
 from hotbit.atoms import Atoms
 import numpy as np
 import hotbit.auxil as aux
 import box.mix as mix
 from numpy.linalg.linalg import norm
-from ase.units import Hartree,Bohr
+from my_ase.units import Hartree,Bohr
 from os import environ,path
 from weakref import proxy
 from copy import copy, deepcopy

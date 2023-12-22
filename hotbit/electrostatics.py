@@ -13,12 +13,13 @@ from math import exp, log, pi, sqrt
 from weakref import proxy
 from math import sqrt
 
-from ase.units import Hartree, Bohr
+from my_ase.units import Hartree, Bohr
 
 import numpy as np
 from scipy.special import erf, erfc
-norm=np.linalg.norm
-dot=np.dot
+
+norm = np.linalg.norm
+dot = np.dot
 
 from .neighbors import get_neighbors
 from hotbit.coulomb import DirectCoulomb
