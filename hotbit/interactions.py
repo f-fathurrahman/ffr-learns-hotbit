@@ -93,9 +93,9 @@ class Interactions:
                     files[e1+e2] = file
                     files[e2+e1] = file
 
-        self.files=files
-        self.calc=proxy(calc)
-        self.present=present
+        self.files = files
+        self.calc = proxy(calc)
+        self.present = present
         self.max_cut = 0.0 # maximum interaction range in Bohrs
         self.read_tables()
         self.first=True
@@ -136,45 +136,51 @@ class Interactions:
         Read par-file tables. Files are tabulated with |ket> having >= angular momentum,
         so one has to copy values for interaction the other way round.
         """
-        self.h={}
-        self.s={}
-        self.cut={}
-        self.maxh={}
+        #
+        print("ENTER Interactions.read_tables")
+        #
+        self.h = {}
+        self.s = {}
+        self.cut = {}
+        self.maxh = {}
 #        self.kill_radii={}
-
+        #
         for si in self.present:
             for sj in self.present:
                 if self.files[si+sj] is None:
-                    raise RuntimeError('No parametrization specified for %s-%s '
-                                       'interaction.' % ( si, sj ))
+                    raise RuntimeError('No parametrization specified for %s-%s interaction.' % ( si, sj ))
                 if self.files[sj+si] is None:
-                    raise RuntimeError('No parametrization specified for %s-%s '
-                                       'interaction.' % ( sj, si ))
+                    raise RuntimeError('No parametrization specified for %s-%s interaction.' % ( sj, si ))
+                #
                 x_ij, table_ij = read_HS(self.files[si+sj], si, sj)
                 self.cut[si+sj] = x_ij[-1]
+                print("Reading file: ", self.files[si+sj])
+                #
                 x_ji, table_ji = read_HS(self.files[sj+si], sj, si)
                 self.cut[sj+si] = x_ji[-1]
-                self.max_cut=max(self.max_cut,self.cut[si+sj])
-                self.maxh[si+sj]=max( [max(np.abs(table_ij[:,i])) for i in range(1,11)] )
+                print("Reading file: ", self.files[sj+si])
+                #
+                self.max_cut = max(self.max_cut,self.cut[si+sj])
+                self.maxh[si+sj] = max( [max(np.abs(table_ij[:,i])) for i in range(1,11)] )
 
-                ei, ej=self.calc.el.elements[si], self.calc.el.elements[sj]
-                valence_i, valence_j=ei.get_valence_orbitals(), ej.get_valence_orbitals()
+                ei, ej = self.calc.el.elements[si], self.calc.el.elements[sj]
+                valence_i, valence_j = ei.get_valence_orbitals(), ej.get_valence_orbitals()
 
-                pair=si+sj
-                self.h[pair]=MultipleSplineFunction(x_ij)
-                self.s[pair]=MultipleSplineFunction(x_ji)
+                pair = si + sj
+                self.h[pair] = MultipleSplineFunction(x_ij)
+                self.s[pair] = MultipleSplineFunction(x_ji)
                 for vi in valence_i:
                     for vj in valence_j:
-                        li, lj=vi[1], vj[1]
+                        li, lj = vi[1], vj[1]
                         # for given valence orbitals, go through all possible integral types (sigma,pi,...)
                         for itype in itypes[li+lj]:
-                            table='%s(%s)-%s(%s)-%s' %(si,li,sj,lj,itype)
-                            short='%s%s%s' %(li,lj,itype)
+                            table = '%s(%s)-%s(%s)-%s' %(si,li,sj,lj,itype)
+                            short = '%s%s%s' %(li,lj,itype)
                             # self.h['C(p)-H(s)-sigma']=...
-                            if short[0:2]=='ps' or short[0:2]=='ds' or short[0:2]=='dp':
+                            if short[0:2] == 'ps' or short[0:2] == 'ds' or short[0:2] == 'dp':
                                 # this is tabulated in other table; switch order -> parity factor
-                                parity=(-1)**( aux[li]+aux[lj] )
-                                index=integrals[short[1]+short[0]+short[2]]
+                                parity = (-1)**( aux[li]+aux[lj] )
+                                index = integrals[short[1]+short[0]+short[2]]
                                 self.h[pair].add_function(table_ji[:,index]*parity,table,integrals[short])
                                 self.s[pair].add_function(table_ji[:,index+10]*parity,table,integrals[short])
                             else:
@@ -184,12 +190,14 @@ class Interactions:
 
         # cutoffs for atom pair indices
         N = self.calc.el.N
-        self.hscut=np.zeros((N,N),float)
+        self.hscut = np.zeros((N,N),float)
         for i,si in enumerate(self.calc.el.symbols):
             for j,sj in enumerate(self.calc.el.symbols):
-                self.hscut[i,j]=self.cut[si+sj]
+                self.hscut[i,j] = self.cut[si+sj]
         self.calc.el.set_cutoffs(self.cut)
-
+        #
+        print("EXIT Interactions.read_tables")
+        #
 
     def get_tables(self, si, sj):
         return self.h[si+sj], self.s[si+sj]
