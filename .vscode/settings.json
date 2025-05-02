@@ -4,5 +4,7 @@
         "TEMP_*": true,
         "hotbit-master": true,
         "*.so": true,
+        "ORIG_files": true,
+        "LOG_*": true,
     },
 }
