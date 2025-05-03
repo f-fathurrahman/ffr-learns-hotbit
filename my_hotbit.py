@@ -127,14 +127,14 @@ class MyHotbit(Output):
 
         if self.get('SCC'):
             try:
-                print(self.st.solver.get_iteration_info(), file=self.txt)
+                print(self.st.solver.get_iteration_info())
                 self.txt.flush()
             except:
                 pass
         if len(self.notes)>0:
-            print('Notes and warnings:', file=self.txt)
+            print('Notes and warnings:')
             for note in self.notes:
-                print(note, file=self.txt)
+                print(note)
         if self.init:
             self.timer.summary()
             Output.__del__(self)
@@ -197,46 +197,46 @@ class MyHotbit(Output):
         from os import environ
 
         self.version = hotbit_version
-        #print('\n\n\n\n\n', file=self.txt)
+        #print('\n\n\n\n\n')
         #
-        print('\n', file=self.txt)
+        print('\n')
         #
-        print(' _           _    _     _ _', file=self.txt)
-        print('| |__   ___ | |_ | |__ |_| |_', file=self.txt)
-        print('|  _ \ / _ \|  _||  _ \| |  _|', file=self.txt)
-        print('| | | | ( ) | |_ | ( ) | | |_', file=self.txt)
-        print('|_| |_|\___/ \__|\____/|_|\__|  ver.',self.version, file=self.txt)
-        print('Distributed under GNU GPL; see %s' %environ.get('HOTBIT_DIR')+'/LICENSE', file=self.txt)
-        print('Date:',asctime(), file=self.txt)
+        print(' _           _    _     _ _')
+        print('| |__   ___ | |_ | |__ |_| |_')
+        print('|  _ \ / _ \|  _||  _ \| |  _|')
+        print('| | | | ( ) | |_ | ( ) | | |_')
+        print('|_| |_|\___/ \__|\____/|_|\__|  ver.',self.version)
+        print('Distributed under GNU GPL; see %s' %environ.get('HOTBIT_DIR')+'/LICENSE')
+        print('Date:',asctime())
         dat=uname()
-        print('Nodename:', dat[1], file=self.txt)
-        print('Arch:', dat[4], file=self.txt)
-        print('Dir:', abspath(curdir), file=self.txt)
-        print('System:', self.el.get_name(), file=self.txt)
-        print('       Charge=%4.1f' % self.charge, file=self.txt)
-        print('       Container', self.el.container_info(), file=self.txt)
-        print('Symmetry operations (if any):', file=self.txt)
+        print('Nodename:', dat[1])
+        print('Arch:', dat[4])
+        print('Dir:', abspath(curdir))
+        print('System:', self.el.get_name())
+        print('       Charge=%4.1f' % self.charge)
+        print('       Container', self.el.container_info())
+        print('Symmetry operations (if any):')
         rs = self.get('rs')
         kpts = self.get('kpts')
         M = self.el.get_number_of_transformations()
         for i in range(3):
-            print('       %i: pbc=' %i, self.el.atoms.get_pbc()[i], end=' ', file=self.txt)
+            print('       %i: pbc=' %i, self.el.atoms.get_pbc()[i], end=' ')
             if type(kpts)==type([]):
-                print(', %s-points=%i, M=%.f' %(rs,len(kpts),M[i]), file=self.txt)
+                print(', %s-points=%i, M=%.f' %(rs,len(kpts),M[i]))
             else:
-                print(', %s-points=%i, M=%.f' %(rs,kpts[i],M[i]), file=self.txt)
-        print('Electronic temperature:', self.width*Hartree,'eV', file=self.txt)
+                print(', %s-points=%i, M=%.f' %(rs,kpts[i],M[i]))
+        print('Electronic temperature:', self.width*Hartree,'eV')
         mixer = self.st.solver.mixer
-        print('Mixer:', mixer.get('name'), 'with memory =', mixer.get('memory'), ', mixing parameter =', mixer.get('beta'), file=self.txt)
-        print(self.el.greetings(), file=self.txt)
-        print(self.ia.greetings(), file=self.txt)
-        print(self.rep.greetings(), file=self.txt)
+        print('Mixer:', mixer.get('name'), 'with memory =', mixer.get('memory'), ', mixing parameter =', mixer.get('beta'))
+        print(self.el.greetings())
+        print(self.ia.greetings())
+        print(self.rep.greetings())
         if self.pp.exists():
-            print(self.pp.greetings(), file=self.txt)
+            print(self.pp.greetings())
 
 
     def out(self,text):
-        print(text, file=self.txt)
+        print(text)
         self.txt.flush()
 
 
@@ -273,7 +273,7 @@ class MyHotbit(Output):
         M = self.st.nk*self.st.norb**2*number
         #     H   S   dH0   dS    wf  H1  dH   rho rhoe
         mem = M + M + 3*M + 3*M + M + M + 3*M + M + M
-        print('Memory consumption estimate: > %.2f GB' %(mem/1E9), file=self.txt)
+        print('Memory consumption estimate: > %.2f GB' %(mem/1E9))
         self.txt.flush()
         if self.dry_run:
             raise SystemExit

@@ -361,7 +361,7 @@ class Elements:
         This initialization is done only once for given set of element info.
         Initialization of any geometrical properties is done elsewhere.
         '''
-        print("ENTER Elements._elements_initialization")
+        print("\n<div> ENTER Elements._elements_initialization\n")
         self.elements={}
         for symb in self.present:
             if symb not in self.files:
@@ -430,7 +430,7 @@ class Elements:
         for i,noi in enumerate(self.nr_orbitals):
             self.atom_orb_indices2[i,:noi]=self.atom_orb_indices[i]
 
-        print("EXIT Elements._elements_initialization")
+        print("\n</div> EXIT Elements._elements_initialization\n")
 
 
 

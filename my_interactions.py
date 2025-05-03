@@ -31,16 +31,9 @@ integrals={'dds':0,'ddp':1,'ddd':2,'pds':3,'pdp':4,'pps':5,'ppp':6,\
 
 class Interactions:
 
-    def __init__(self,calc):
-        """
-        Set up the input files for interactions.
+    def __init__(self, calc):
 
-        If tables==None, use default tables.
-        If tables['rest']=='default' use default interactions for the ones not given in tables.
-
-        """
-
-        print("ENTER Interactions constructor")
+        print("\n<div> ENTER Interactions constructor\n")
 
         from os import environ
         from os.path import isfile
@@ -48,21 +41,23 @@ class Interactions:
         tables = copy(calc.get('tables'))
         present = calc.el.get_present()
         default = environ.get('HOTBIT_PARAMETERS')
-#        current = path.abspath('.')
+        # current = path.abspath('.')
         self.nullpar = path.join(default,'null.par')
 
-        files={}
+        files = {}
         for k1 in present:
             for k2 in present:
                 files[k1+k2] = None
 
         # set customized files
-        if tables!=None:
+        if tables != None:
             for key in tables:
-                if key=='rest': continue
+                if key == 'rest':
+                    continue
+                #
                 e1,e2 = auxil.separate_symbols(key)
                 file = tables[key]
-                if file==None:
+                if file == None:
                     file = self.nullpar
                 #if file[-4:]!='.par':
                 #    file+='.par'
@@ -78,10 +73,10 @@ class Interactions:
         if tables==None or tables!=None and 'rest' in tables and tables['rest']=='default':
             for e1 in present:
                 for e2 in present:
-                    if files[e1+e2]!=None:
+                    if files[e1+e2] != None:
                         continue
-                    def12 = path.join(default,'%s_%s.par' %(e1,e2))
-                    def21 = path.join(default,'%s_%s.par' %(e2,e1))
+                    def12 = path.join(default, '%s_%s.par' %(e1,e2))
+                    def21 = path.join(default, '%s_%s.par' %(e2,e1))
 
                     if isfile(def12):
                         file = def12
@@ -92,15 +87,17 @@ class Interactions:
                     file = path.abspath(file)
                     files[e1+e2] = file
                     files[e2+e1] = file
+        #
+        print("files = ", files)
 
         self.files = files
         self.calc = proxy(calc)
         self.present = present
         self.max_cut = 0.0 # maximum interaction range in Bohrs
         self.read_tables()
-        self.first=True
+        self.first = True
 
-        print("EXIT Interactions constructor")
+        print("\n</div>EXIT Interactions constructor\n")
 
 
 
@@ -137,7 +134,7 @@ class Interactions:
         so one has to copy values for interaction the other way round.
         """
         #
-        print("ENTER Interactions.read_tables")
+        print("\n<div> ENTER Interactions.read_tables\n")
         #
         self.h = {}
         self.s = {}
@@ -196,7 +193,7 @@ class Interactions:
                 self.hscut[i,j] = self.cut[si+sj]
         self.calc.el.set_cutoffs(self.cut)
         #
-        print("EXIT Interactions.read_tables")
+        print("\n</div> EXIT Interactions.read_tables\n")
         #
 
     def get_tables(self, si, sj):
@@ -292,17 +289,15 @@ class Interactions:
     def get_matrices(self, kpts=None):
         """ Hamiltonian and overlap matrices. """
         
-        print("Starting matrix construction")
+        print("\n<div> ENTER Interactions.get_matrices")
 
         timing = False
         el = self.calc.el
         states = self.calc.st
-        start = self.calc.start_timing
-        stop = self.calc.stop_timing
+
         seps = self.calc.get('sepsilon')
-        start('matrix construction')
-        orbs=el.orbitals()
-        norb=len(orbs)
+        orbs = el.orbitals()
+        norb = len(orbs)
 
         if kpts is None:
             nk = states.nk
@@ -312,15 +307,11 @@ class Interactions:
             ks.shape = (-1, 3)
             nk       = ks.shape[0]
 
-        H0  = np.zeros((nk,norb,norb),complex)
-        S   = np.zeros((nk,norb,norb),complex)
-        dH0 = np.zeros((nk,norb,norb,3),complex)
-        dS  = np.zeros((nk,norb,norb,3),complex)
+        H0  = np.zeros( (nk,norb,norb), complex )
+        S   = np.zeros( (nk,norb,norb), complex )
+        dH0 = np.zeros( (nk,norb,norb,3), complex )
+        dS  = np.zeros( (nk,norb,norb,3), complex )
 
-#        orbitals=[[orb['orbital'] for orb in el.orbitals(i)]
-#                  for i in range(len(el))]
-#        orbindex=[el.orbitals(i,indices=True)
-#                  for i in range(len(el))]
         # FFR: fixed size????
         h, s, dh, ds = zeros((14,)), zeros((14,)), zeros((14,3)), zeros((14,3))
 
@@ -341,16 +332,17 @@ class Interactions:
             a, b = o1i, o1i+noi
             # on-site energies only for n==0
             for orb in el.orbitals(i):
-                ind=orb['index']
+                ind = orb['index']
                 H0[:,ind,ind] = orb['energy']
                 S[:,ind,ind]  = 1.0 + seps
+            #
             for j,sj,noj,o1j in lst[i:]:
                 c, d = o1j, o1j+noj
                 htable = self.h[si+sj]
                 stable = self.s[si+sj]
                 ij_interact = False
-                r1, r2= htable.get_range()
-
+                r1, r2 = htable.get_range()
+                #
                 for n, (rij,dij) in enumerate(zip(Rijn[:,i,j],dijn[:,i,j])):
                     if i==j and n==0:
                         continue
@@ -361,16 +353,17 @@ class Interactions:
                     ds.fill(0)
 
                     rijh  = rij/dij
-                    if dij<0.1:
+                    if dij < 0.1:
                         print(nt)
                         raise AssertionError('Distance between atoms %i and %i is only %.4f Bohr' %(i,j,dij) )
-                    assert dij>0.1
+                    #
+                    assert dij > 0.1
+                    #
                     if not r1<=dij<=r2:
                         continue
                     ij_interact = True
 
                     # interpolate Slater-Koster tables and derivatives
-                    if timing: start('splint+SlaKo+DH')
                     hij, dhij = htable(dij)
                     sij, dsij = stable(dij)
 
@@ -379,7 +372,6 @@ class Interactions:
                     dh[indices], ds[indices] = outer(dhij,rijh), outer(dsij,rijh)
 
                     # make the Slater-Koster transformations
-#                    obsi, obsj=orbindex[i], orbindex[j]
                     ht, st, dht, dst = \
                         fast_slako_transformations(rijh,dij,noi,noj,h,s,dh,ds)
 
@@ -390,9 +382,6 @@ class Interactions:
                     st = dot( st,DT[0:noj,0:noj] )
                     dht = dot( dht.transpose((2,0,1)),DT[0:noj,0:noj] ).transpose((1,2,0))
                     dst = dot( dst.transpose((2,0,1)),DT[0:noj,0:noj] ).transpose((1,2,0))
-                    if timing: stop('splint+SlaKo+DH')
-
-                    if timing: start('k-points')
                     phase = phases[n]
                     hblock  = outer(phase,ht.flatten()).reshape(nk,noi,noj)
                     sblock  = outer(phase,st.flatten()).reshape(nk,noi,noj)
@@ -403,7 +392,6 @@ class Interactions:
                     S[  :,a:b,c:d]   += sblock
                     dH0[:,a:b,c:d,:] += dhblock
                     dS[ :,a:b,c:d,:] += dsblock
-                    if timing: stop('k-points')
 
                     if i!=j and ij_interact:
                         # construct the other derivatives wrt. atom j.
@@ -415,26 +403,24 @@ class Interactions:
                         dH0[:,c:d,a:b,:] += dh2block.transpose((0,2,1,3)).conjugate()
                         dS[ :,c:d,a:b,:] += ds2block.transpose((0,2,1,3)).conjugate()
 
-                if i!=j and ij_interact:
-                    if timing: start('symm')
+                if i != j and ij_interact:
                     # Hermitian (and anti-Hermitian) conjugates;
                     # only if matrix block non-zero
                     # ( H(k) and S(k) can be (anti)symmetrized as a whole )
                     # TODO: symmetrization should be done afterwards
                     H0[ :,c:d,a:b]   =  H0[ :,a:b,c:d].transpose((0,2,1)).conjugate()
                     S[  :,c:d,a:b]   =  S[  :,a:b,c:d].transpose((0,2,1)).conjugate()
-                    if timing: stop('symm')
 
         if kpts is None:
             self.H0, self.S, self.dH0, self.dS = H0, S, dH0, dS
 
+        # print info about Hamiltonian
         if self.first:
             nonzero = sum( abs(S[0].flatten())>1E-15 )
             self.calc.out('Hamiltonian ~%.3f %% filled.' %(nonzero*100.0/norb**2) )
-            self.first=False
+            self.first = False
 
-        stop('matrix construction')
-        print("Finished matrix construction")
+        print("\n</div> EXIT Interactions.get_matrices\n")
         return H0, S, dH0, dS
 
 

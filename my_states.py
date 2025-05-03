@@ -91,12 +91,18 @@ class States:
                      allow interpolation of this k-sampling.
         rs:          use 'kappa'- or 'k'-point sampling
         '''
+
+        print("\n<div> ENTER States.setup_k_sampling\n")
+
         if (len(kpts)==1 or isinstance(kpts,tuple) and kpts!=(1,1,1)) and self.calc.get('width')<1E-10:
             raise AssertionError('With k-point sampling width must be>0!')
             
         M = self.calc.el.get_number_of_transformations()
+        print("M = ", M)
+
         if isinstance(kpts,tuple):
             table = self.calc.el.atoms.container.get_table()
+            print("Will setup equal-weighted and spaced k-point mesh")
             # set up equal-weighted and spaced k-point mesh
             if 0 in kpts:
                 raise AssertionError('Each direction must have at least one k-point! (Gamma-point)')
@@ -173,7 +179,14 @@ class States:
             for kp in k:
                 if kp[i]>1E-10 and not pbc[i]:
                     raise AssertionError('Do not set (non-zero) k-points in non-periodic direction!')
-        
+
+        print("nk = ", nk)
+        print("k = ", k)
+        print("kl = ", kl)
+        print("wk = ", wk)
+
+        print("\n</div> EXIT States.setup_k_sampling\n")
+
         return nk, k, kl, wk
         
 
@@ -192,7 +205,7 @@ class States:
     def solve(self):
         #
         #
-        print("\n<div> ENTER my_states.solve\n")
+        print("\n<div> ENTER States.solve\n")
         #
         if self.nk == None:
             physical = self.calc.get('physical_k')
@@ -206,10 +219,12 @@ class States:
         print("type dq = ", type(dq))
         print("dq.shape = ", dq.shape) # dq is a Numpy array
         #
+        # Print put memory estimate for the first time
         if self.first_solve:
             self.calc.memory_estimate()
             self.first_solve = False
         self.H0, self.S, self.dH0, self.dS = self.calc.ia.get_matrices()
+        print("H0.shape = ", self.H0.shape)
 
         if self.SCC:
             self.es.construct_Gamma_matrix(self.calc.el.atoms)
@@ -222,7 +237,7 @@ class States:
         self.count += 1
         self.calc.stop_timing('solve')
         
-        print("\n</div> EXIT my_states.solve\n")
+        print("\n</div> EXIT States.solve\n")
 
 
     def check_mulliken_charges(self):

@@ -11,7 +11,8 @@ atoms = FaceCenteredCubic(
     directions=((0,1,1),(1,0,1),(1,1,0)),
     align=False
 )
-                          
+print("atoms = ", atoms)
+                   
 calc = MyHotbit(SCC=False, kpts=(8,8,8), txt="LOG_Au_fcc")
 
 atoms.set_calculator(calc) # initialize will be called here
