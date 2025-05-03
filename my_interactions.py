@@ -39,7 +39,11 @@ class Interactions:
         from os.path import isfile
 
         tables = copy(calc.get('tables'))
+        print("tables = ", tables)
+
         present = calc.el.get_present()
+        print("present = ", present)
+
         default = environ.get('HOTBIT_PARAMETERS')
         # current = path.abspath('.')
         self.nullpar = path.join(default,'null.par')
@@ -55,7 +59,7 @@ class Interactions:
                 if key == 'rest':
                     continue
                 #
-                e1,e2 = auxil.separate_symbols(key)
+                e1, e2 = auxil.separate_symbols(key)
                 file = tables[key]
                 if file == None:
                     file = self.nullpar
@@ -88,7 +92,9 @@ class Interactions:
                     files[e1+e2] = file
                     files[e2+e1] = file
         #
-        print("files = ", files)
+        print("Files: ")
+        for kf,ff in files.items():
+            print(f"pair: {kf} file: {ff}")
 
         self.files = files
         self.calc = proxy(calc)
@@ -238,6 +244,9 @@ class Interactions:
 
         @param n: 3-tuple of symmetry transformation
         '''
+        
+        print("Calling Interactions.rotation_transformation")
+
         R = self.calc.el.rotation(n)
 
         if np.all(abs(R.diagonal()-1)<1E-12):
@@ -326,8 +335,10 @@ class Interactions:
             Rot.append( self.calc.el.rotation(nt) )
         self.phases = phases
 
-        lst = el.get_property_lists(['i','s','no','o1'])
+        lst = el.get_property_lists(['i', 's', 'no', 'o1'])
         Rijn, dijn = self.calc.el.get_distances()
+        # defined in elements.py
+        # 'i'=index; 's'=symbol; 'no'=number of orbitals; 'o1'= first orbital
         for i,si,noi,o1i in lst:
             a, b = o1i, o1i+noi
             # on-site energies only for n==0
@@ -359,7 +370,7 @@ class Interactions:
                     #
                     assert dij > 0.1
                     #
-                    if not r1<=dij<=r2:
+                    if not r1 <= dij <= r2:
                         continue
                     ij_interact = True
 
