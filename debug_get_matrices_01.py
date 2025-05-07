@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 from _hotbit import fast_slako_transformations
 
@@ -25,8 +26,10 @@ def debug_get_matrices(my_ia, kpts=None):
     S   = np.zeros( (nk,norb,norb), complex )
     dH0 = np.zeros( (nk,norb,norb,3), complex )
     dS  = np.zeros( (nk,norb,norb,3), complex )
+    print(f"norb = {norb}")
 
-    # FFR: fixed size????
+    # ffr: fixed size???? 
+    # ffr: Allocate memory for submatrices
     h = np.zeros((14,))
     s = np.zeros((14,))
     dh = np.zeros((14,3))
@@ -37,16 +40,22 @@ def debug_get_matrices(my_ia, kpts=None):
     Rot = []
     for n in range(len(el.ntuples)):
         nt = el.ntuples[n]
-        phases.append( np.array([np.exp(1j*np.dot(nt,k))
-                                    for k in ks]) )
+        print(f"n={n} nt={nt}")
+        #
+        phases.append( np.array([np.exp(1j*np.dot(nt,k)) for k in ks]) )
         DTn.append( my_ia.rotation_transformation(nt) )
         Rot.append( my_ia.calc.el.rotation(nt) )
     my_ia.phases = phases
+
+    print("phases = ", phases)
+    print("DTn = ", DTn)
+    print("Rot = ", Rot)
 
     lst = el.get_property_lists(['i', 's', 'no', 'o1'])
     Rijn, dijn = my_ia.calc.el.get_distances()
     # defined in elements.py
     # 'i'=index; 's'=symbol; 'no'=number of orbitals; 'o1'= first orbital
+    icalc_matrix = 0
     for i,si,noi,o1i in lst:
         a = o1i # start index
         b = o1i + noi # stop index
@@ -61,13 +70,18 @@ def debug_get_matrices(my_ia, kpts=None):
             c = o1j
             d = o1j + noj
             #
-            print(f"Loop (i={i},j={j}) (si={si},sj={sj}) (noi={noi},noj={noj}) (o1i={o1i},o1j={o1j})")
+            print(f"\nLoop (i={i},j={j}) (si={si},sj={sj}) (noi={noi},noj={noj}) (o1i={o1i},o1j={o1j})")
+            print(f"indices: {a}-{b} {c}-{d}")
+            #
             htable = my_ia.h[si+sj]
             stable = my_ia.s[si+sj]
             ij_interact = False
             r1, r2 = htable.get_range()
             #
             for n, (rij,dij) in enumerate(zip(Rijn[:,i,j], dijn[:,i,j])):
+                #
+                print(f"n = {n} rij={rij} dij={dij}")
+                #
                 if i==j and n==0:
                     continue
                 nt = el.ntuples[n]
@@ -92,12 +106,16 @@ def debug_get_matrices(my_ia, kpts=None):
                 sij, dsij = stable(dij)
 
                 indices = htable.get_indices()
+                print("htable indices = ", indices)
+                #
                 h[indices], s[indices] = hij, sij
                 dh[indices], ds[indices] = np.outer(dhij,rijh), np.outer(dsij,rijh)
 
                 # make the Slater-Koster transformations
-                ht, st, dht, dst = \
-                    fast_slako_transformations(rijh, dij, noi, noj, h, s, dh, ds)
+                ht, st, dht, dst = fast_slako_transformations(rijh, dij, noi, noj, h, s, dh, ds)
+                print(f"rijh={rijh}")
+                print(f"h.shape={h.shape}")
+                print(f"dh.shape={dh.shape}")
 
                 # Here we do the MEL transformation;
                 # H'_ij = sum_k H_ik * D_kj^T  ( |j> = sum_k D_jk |k> )
@@ -117,6 +135,8 @@ def debug_get_matrices(my_ia, kpts=None):
                 dH0[:,a:b,c:d,:] += dhblock
                 dS[ :,a:b,c:d,:] += dsblock
 
+                icalc_matrix += 1
+
                 if i!=j and ij_interact:
                     # construct the other derivatives wrt. atom j.
                     Rot = my_ia.calc.el.Rot[n]
@@ -134,6 +154,18 @@ def debug_get_matrices(my_ia, kpts=None):
                 # TODO: symmetrization should be done afterwards
                 H0[ :,c:d,a:b]   =  H0[ :,a:b,c:d].transpose((0,2,1)).conjugate()
                 S[  :,c:d,a:b]   =  S[  :,a:b,c:d].transpose((0,2,1)).conjugate()
+        
+            submatAffected = np.zeros(H0[0,:,:].shape)
+            submatAffected[a:b,c:d] = 1.0
+            plt.clf()
+            #plt.matshow(H0[0,:,:].real)
+            #plt.imshow(np.abs(H0[0,:,:]), vmin=0.0, vmax=0.1)
+            #plt.imshow(np.abs(H0[0,:,:]))
+            plt.imshow(submatAffected)
+            plt.colorbar()
+            plt.title(f"(si={si},sj={sj}) (o1i={o1i},o1j={o1j})")
+            plt.savefig(f"IMG_Ham_{i}_{j}.png", dpi=150)
+
 
     if kpts is None:
         my_ia.H0, my_ia.S, my_ia.dH0, my_ia.dS = H0, S, dH0, dS
