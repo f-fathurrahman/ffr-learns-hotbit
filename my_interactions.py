@@ -340,7 +340,7 @@ class Interactions:
         # defined in elements.py
         # 'i'=index; 's'=symbol; 'no'=number of orbitals; 'o1'= first orbital
         for i,si,noi,o1i in lst:
-            a, b = o1i, o1i+noi
+            a, b = o1i, o1i+noi # block indices?
             # on-site energies only for n==0
             for orb in el.orbitals(i):
                 ind = orb['index']
@@ -349,6 +349,7 @@ class Interactions:
             #
             for j,sj,noj,o1j in lst[i:]:
                 c, d = o1j, o1j+noj
+                print(f"Loop (i={i},j={j}) (si={si},sj={sj}) (noi={noi},noj={noj}) (o1i={o1i},o1j={o1j})")
                 htable = self.h[si+sj]
                 stable = self.s[si+sj]
                 ij_interact = False
